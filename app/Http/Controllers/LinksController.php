@@ -110,4 +110,106 @@ class LinksController extends Controller
             'user' => $user,
         ]);
     }
+
+    /**
+     * Store a new link.
+     */
+    public function store(Request $request)
+    {
+        $request->validate([
+            'url' => 'required|url|max:2000',
+            'title' => 'nullable|string|max:255',
+            'description' => 'nullable|string|max:1000',
+            'category_id' => 'nullable|exists:categories,id',
+            'link_type_id' => 'nullable|exists:link_types,id',
+            'is_favorite' => 'boolean',
+            'tags' => 'nullable|string|max:500',
+        ]);
+
+        // If category_id is provided, ensure user owns it
+        if ($request->category_id) {
+            $category = Category::find($request->category_id);
+            if (!$category || $category->user_id !== auth()->id()) {
+                return back()->withErrors(['category_id' => 'Invalid category selected.']);
+            }
+        }
+
+        $link = Link::create([
+            'user_id' => auth()->id(),
+            'url' => $request->url,
+            'title' => $request->title ?: $this->extractTitleFromUrl($request->url),
+            'description' => $request->description,
+            'category_id' => $request->category_id,
+            'link_type_id' => $request->link_type_id,
+            'is_favorite' => $request->boolean('is_favorite', false),
+            'tags' => $request->tags,
+        ]);
+
+        return redirect()->route('links.index')->with('success', 'Link created successfully!');
+    }
+
+    /**
+     * Update an existing link.
+     */
+    public function update(Request $request, Link $link)
+    {
+        // Ensure user owns this link
+        if ($link->user_id !== auth()->id()) {
+            abort(404);
+        }
+
+        $request->validate([
+            'url' => 'required|url|max:2000',
+            'title' => 'nullable|string|max:255',
+            'description' => 'nullable|string|max:1000',
+            'category_id' => 'nullable|exists:categories,id',
+            'link_type_id' => 'nullable|exists:link_types,id',
+            'is_favorite' => 'boolean',
+            'tags' => 'nullable|string|max:500',
+        ]);
+
+        // If category_id is provided, ensure user owns it
+        if ($request->category_id) {
+            $category = Category::find($request->category_id);
+            if (!$category || $category->user_id !== auth()->id()) {
+                return back()->withErrors(['category_id' => 'Invalid category selected.']);
+            }
+        }
+
+        $link->update([
+            'url' => $request->url,
+            'title' => $request->title ?: $this->extractTitleFromUrl($request->url),
+            'description' => $request->description,
+            'category_id' => $request->category_id,
+            'link_type_id' => $request->link_type_id,
+            'is_favorite' => $request->boolean('is_favorite', false),
+            'tags' => $request->tags,
+        ]);
+
+        return redirect()->route('links.index')->with('success', 'Link updated successfully!');
+    }
+
+    /**
+     * Delete a link.
+     */
+    public function destroy(Link $link)
+    {
+        // Ensure user owns this link
+        if ($link->user_id !== auth()->id()) {
+            abort(404);
+        }
+
+        $link->delete();
+
+        return redirect()->route('links.index')->with('success', 'Link deleted successfully!');
+    }
+
+    /**
+     * Extract title from URL (basic implementation).
+     */
+    private function extractTitleFromUrl(string $url): string
+    {
+        $domain = parse_url($url, PHP_URL_HOST);
+        return $domain ? ucfirst(str_replace('www.', '', $domain)) : 'Link';
+    }
 }

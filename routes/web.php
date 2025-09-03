@@ -24,7 +24,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Links Management
     Route::get('/links', [LinksController::class, 'index'])->name('links.index');
     Route::get('/links/create', [LinksController::class, 'create'])->name('links.create');
+    Route::post('/links', [LinksController::class, 'store'])->name('links.store');
     Route::get('/links/{link}/edit', [LinksController::class, 'edit'])->name('links.edit');
+    Route::put('/links/{link}', [LinksController::class, 'update'])->name('links.update');
+    Route::delete('/links/{link}', [LinksController::class, 'destroy'])->name('links.destroy');
     
     // Categories Management
     Route::get('/categories', [CategoriesController::class, 'index'])->name('categories.index');
