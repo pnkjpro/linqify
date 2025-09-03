@@ -14,12 +14,7 @@ const form = useForm({
 });
 
 const submit = () => {
-  form.post(route('api.categories.store'), {
-    onSuccess: () => {
-      // Redirect to categories index on success
-      window.location.href = route('categories.index');
-    }
-  });
+  form.post(route('categories.store'));
 };
 
 const colors = [

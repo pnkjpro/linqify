@@ -28,12 +28,7 @@ const form = useForm({
 });
 
 const submit = () => {
-  form.put(route('api.categories.update', props.category.id), {
-    onSuccess: () => {
-      // Redirect to categories index on success
-      window.location.href = route('categories.index');
-    }
-  });
+  form.put(route('categories.update', props.category.id));
 };
 
 const colors = [
