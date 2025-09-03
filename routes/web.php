@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LinksController;
+use App\Http\Controllers\CategoriesController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -26,7 +27,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/links/{link}/edit', [LinksController::class, 'edit'])->name('links.edit');
     
     // Categories Management
-    Route::get('/categories', [LinksController::class, 'categories'])->name('categories.index');
+    Route::get('/categories', [CategoriesController::class, 'index'])->name('categories.index');
+    Route::get('/categories/create', [CategoriesController::class, 'create'])->name('categories.create');
+    Route::get('/categories/{category}/edit', [CategoriesController::class, 'edit'])->name('categories.edit');
     
     // Settings
     Route::get('/settings', [LinksController::class, 'settings'])->name('settings');
