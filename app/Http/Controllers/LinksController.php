@@ -30,9 +30,39 @@ class LinksController extends Controller
             'search' => $request->get('search'),
         ];
 
+        // Fetch links with relationships and apply filters
+        $linksQuery = Link::where('user_id', $user->id)
+            ->with(['category', 'linkType'])
+            ->orderBy('created_at', 'desc');
+
+        // Apply filters if provided
+        if ($filters['category_id']) {
+            $linksQuery->where('category_id', $filters['category_id']);
+        }
+
+        if ($filters['link_type_id']) {
+            $linksQuery->where('link_type_id', $filters['link_type_id']);
+        }
+
+        if ($filters['is_favorite']) {
+            $linksQuery->where('is_favorite', true);
+        }
+
+        if ($filters['search']) {
+            $linksQuery->where(function($query) use ($filters) {
+                $query->where('title', 'like', '%' . $filters['search'] . '%')
+                      ->orWhere('description', 'like', '%' . $filters['search'] . '%')
+                      ->orWhere('url', 'like', '%' . $filters['search'] . '%')
+                      ->orWhere('tags', 'like', '%' . $filters['search'] . '%');
+            });
+        }
+
+        $links = $linksQuery->get();
+
         return Inertia::render('Links/Index', [
             'categories' => $categories,
             'link_types' => $linkTypes,
+            'links' => $links,
             'filters' => $filters,
         ]);
     }
