@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LinksController;
 use App\Http\Controllers\CategoriesController;
+use App\Http\Controllers\RedirectController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -47,3 +48,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+// Short URL redirect routes (must be at the end to avoid conflicts)
+Route::get('/{stub}', [RedirectController::class, 'redirect'])->where('stub', '[a-zA-Z0-9_-]+')->name('redirect');
+Route::get('/{stub}/preview', [RedirectController::class, 'preview'])->where('stub', '[a-zA-Z0-9_-]+')->name('preview');
+
+// Short URL redirect routes (must be at the end to avoid conflicts)
+Route::get('/{stub}', [RedirectController::class, 'redirect'])
+    ->where('stub', '[a-zA-Z0-9_-]+')
+    ->name('short-url.redirect');
+
+Route::get('/{stub}/preview', [RedirectController::class, 'preview'])
+    ->where('stub', '[a-zA-Z0-9_-]+')
+    ->name('short-url.preview');

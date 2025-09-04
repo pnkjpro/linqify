@@ -18,6 +18,7 @@ class Link extends Model
         'link_type_id',
         'title',
         'url',
+        'short_url',
         'description',
         'tags',
         'is_favorite',
@@ -175,5 +176,29 @@ class Link extends Model
     public function scopeRecentlyAccessed(Builder $query): Builder
     {
         return $query->orderBy('last_accessed_at', 'desc');
+    }
+
+    /**
+     * Scope a query to only include shortened URLs.
+     */
+    public function scopeShortened(Builder $query): Builder
+    {
+        return $query->whereNotNull('short_url');
+    }
+
+    /**
+     * Get the full short URL.
+     */
+    public function getFullShortUrlAttribute(): ?string
+    {
+        return $this->short_url ? url('/' . $this->short_url) : null;
+    }
+
+    /**
+     * Check if this link has a short URL.
+     */
+    public function hasShortUrl(): bool
+    {
+        return !empty($this->short_url);
     }
 }

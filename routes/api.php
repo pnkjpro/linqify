@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\LinkController;
 use App\Http\Controllers\Api\LinkTypeController;
 use App\Http\Controllers\Api\UserSettingsController;
+use App\Http\Controllers\Api\UrlShortenerController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -48,4 +49,17 @@ Route::middleware(['auth:sanctum'])->group(function () {
     
     // Utility endpoints
     Route::post('scrape-meta', [LinkController::class, 'scrapeMeta'])->name('api.scrape-meta');
+});
+
+// Public URL Shortener API (no authentication required, but with CSRF protection for web requests)
+Route::middleware(['web'])->prefix('shorten')->group(function () {
+    Route::post('/', [UrlShortenerController::class, 'shorten'])->name('api.shorten');
+    Route::post('/check-stub', [UrlShortenerController::class, 'checkStub'])->name('api.check-stub');
+    Route::get('/preview/{stub}', [UrlShortenerController::class, 'preview'])->name('api.short-url.preview');
+});
+
+// Authenticated URL Shortener routes
+Route::middleware(['auth:sanctum'])->prefix('shorten')->group(function () {
+    Route::get('/my-links', [UrlShortenerController::class, 'index'])->name('api.my-short-links');
+    Route::delete('/{stub}', [UrlShortenerController::class, 'destroy'])->name('api.short-url.delete');
 });

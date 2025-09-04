@@ -57,6 +57,14 @@ class Category extends Model
     }
 
     /**
+     * Scope a query to only include system categories (no user).
+     */
+    public function scopeSystem($query)
+    {
+        return $query->whereNull('user_id');
+    }
+
+    /**
      * Scope a query to order by sort order.
      */
     public function scopeOrdered($query)

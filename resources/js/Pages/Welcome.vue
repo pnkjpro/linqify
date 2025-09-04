@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
+import UrlShortener from '@/Components/UrlShortener.vue';
 
 defineProps<{
     canLogin?: boolean;
@@ -136,6 +137,29 @@ defineProps<{
                         <span>Setup in 2 minutes</span>
                     </div>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- URL Shortener Section -->
+    <section class="py-20 bg-gradient-to-r from-violet-50 via-cyan-50 to-pink-50 relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <div class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-gradient-to-r from-blue-100 to-purple-100 text-blue-800 border border-blue-200 shadow-sm mb-6">
+                    ⚡ Quick & Easy
+                </div>
+                <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+                    <span class="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                        URL Shortener
+                    </span>
+                </h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Create short, shareable links instantly. Perfect for social media, emails, or anywhere you need clean, professional URLs.
+                </p>
+            </div>
+            
+            <div class="flex justify-center">
+                <UrlShortener />
             </div>
         </div>
     </section>
