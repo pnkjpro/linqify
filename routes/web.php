@@ -19,7 +19,7 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('auth/google', [GoogleController::class, 'redirectToGoogle']);
+Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('google.redirect');
 Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
 
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -52,10 +52,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 require __DIR__.'/auth.php';
-
-// Short URL redirect routes (must be at the end to avoid conflicts)
-Route::get('/{stub}', [RedirectController::class, 'redirect'])->where('stub', '[a-zA-Z0-9_-]+')->name('redirect');
-Route::get('/{stub}/preview', [RedirectController::class, 'preview'])->where('stub', '[a-zA-Z0-9_-]+')->name('preview');
 
 // Short URL redirect routes (must be at the end to avoid conflicts)
 Route::get('/{stub}', [RedirectController::class, 'redirect'])
